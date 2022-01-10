@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import anime from "animejs";
+import Beat from "./Beat";
 
 export default class Application extends EventEmitter {
   static get events() {
@@ -10,23 +10,22 @@ export default class Application extends EventEmitter {
 
   constructor() {
     super();
-    this.init();
+
+    this._beat = new Beat();
+    this._create();
+
     this.emit(Application.events.READY);
   }
+  _create() {
+    const lyrics = ["Ah", "ha", "ha", "ha", "stayin' alive", "stayin' alive"];
+    let count = 0;
 
-  init() {
-    function animate() {
-      console.log("clicked");
-      anime({
-        targets: ".article",
-        translateX: 250,
-        direction: "alternate",
-        loop: true,
-        easing: "spring(1, 80, 10, 0)",
-      });
-    }
+    this._beat.on("update", (bit) => {
+      const message = document.createElement("div");
+      message.classList.add("message");
+      message.innerText = lyrics[bit];
 
-    const article = document.getElementById("article");
-    article.addEventListener("click", animate);
+      document.querySelector(".main").appendChild(message);
+    });
   }
 }
